@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { supabase } from "@/lib/supabase";
+import type { Session } from '@supabase/supabase-js';
 import { Card, CardContent } from "@/components/ui/card"; // from shadcn/ui
 import { Button } from "@/components/ui/button";
 import { BarChart3, Calendar, CheckCircle } from "lucide-react";
@@ -16,7 +17,7 @@ type Task = {
 };
 
 export default function Dashboard() {
-  const [session, setSession] = useState<any>(null);
+  const [session, setSession] = useState<Session | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
 
   // Check if user is logged in
