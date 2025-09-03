@@ -1,9 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { supabase } from "@/lib/supabase";
-import type { Session } from '@supabase/supabase-js';
-import { Card, CardContent } from "@/components/ui/card"; // from shadcn/ui
+import type { Session } from "@supabase/supabase-js";
+import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { BarChart3, Calendar, CheckCircle } from "lucide-react";
 import Link from "next/link";
@@ -20,24 +19,41 @@ export default function Dashboard() {
   const [session, setSession] = useState<Session | null>(null);
   const [tasks, setTasks] = useState<Task[]>([]);
 
-  // Check if user is logged in
+  // Initialize Supabase in the browser
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
+    const initSupabase = async () => {
+      const { createClient } = await import("@supabase/supabase-js");
+      const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      );
+
+      // Get current session
+      const { data: { session } } = await supabase.auth.getSession();
       setSession(session);
-    });
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      (_event, session) => setSession(session)
-    );
+      // Listen to auth changes
+      const { data: { subscription } } = supabase.auth.onAuthStateChange(
+        (_event, session) => setSession(session)
+      );
 
-    return () => subscription.unsubscribe();
+      return () => subscription.unsubscribe();
+    };
+
+    initSupabase();
   }, []);
 
-  // Fetch tasks for user
+  // Fetch tasks once session is available
   useEffect(() => {
     if (!session) return;
 
     const fetchTasks = async () => {
+      const { createClient } = await import("@supabase/supabase-js");
+      const supabase = createClient(
+        process.env.NEXT_PUBLIC_SUPABASE_URL!,
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+      );
+
       const { data, error } = await supabase
         .from("tasks")
         .select("*")
@@ -50,14 +66,6 @@ export default function Dashboard() {
 
     fetchTasks();
   }, [session]);
-
-  // if (!session) {
-  //   return (
-  //     <div className="flex items-center justify-center h-screen">
-  //       <p className="text-lg">Please log in to access your dashboard.</p>
-  //     </div>
-  //   );
-  // }
 
   return (
     <main className="p-6 space-y-6">
@@ -86,10 +94,8 @@ export default function Dashboard() {
             </div>
           </CardContent>
         </Card>
-        
-        <Link 
-          href="/calendar"  
-        >
+
+        <Link href="/calendar">
           <Card className="shadow-md rounded-2xl">
             <CardContent className="flex items-center gap-3 p-4">
               <Calendar className="w-6 h-6 text-purple-500" />
