@@ -1,11 +1,12 @@
 @import "tailwindcss";
 @import "tw-animate-css";
+@config "../../tailwind.config.ts";
 
 @custom-variant dark (&:is(.dark *));
 @theme {
   --color-brand-blue: #006FF9;
   --color-brand-red: #FF5630;
-  --color-brand-white: #F2F8FF;
+  --color-brand-lightblue: #F2F8FF;
   --color-brand-yellow: #FFCC00;
   --color-neutral-400: #323B4B;
   --color-neutral-300: #8A94A6;
@@ -132,5 +133,8 @@
   body {
     @apply bg-background text-foreground;
     font-size: 14px;
+  }
+  button{
+    @apply cursor-pointer;
   }
 }

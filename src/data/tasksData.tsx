@@ -35,5 +35,17 @@ export const tasks: Task[] = [
     expected_at: "2025-09-03T09:00:00Z",
     actual_at: "2025-09-03T09:05:00Z",
     created_at: "2025-09-02T22:10:00Z"
+  },
+  {
+    id: "3c4d5e6f-3333-4444-5555-666677778888",
+    user_id: "u1234567-aaaa-bbbb-cccc-111122223333",
+    habit_id: "h3333333-aaaa-bbbb-cccc-111122223333",
+    title: "Meditation",
+    description: "Meditate for 15 minutes",
+    color: "#3357FF",
+    category: "Wellness",
+    expected_at: "2025-09-04T09:00:00Z",
+    actual_at: "2025-09-04T09:05:00Z",
+    created_at: "2025-09-04T22:10:00Z"
   }
 ];
