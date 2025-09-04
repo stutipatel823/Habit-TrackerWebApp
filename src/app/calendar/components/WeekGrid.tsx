@@ -1,5 +1,5 @@
 import WeekCell from "./WeekCell";
-import { format, setHours, setMinutes, startOfDay, addMinutes } from "date-fns";
+import { format, setHours, setMinutes, startOfDay } from "date-fns";
 import { Task } from "@/lib/task";
 
 interface WeekViewProps {
@@ -73,7 +73,6 @@ export default function WeekView({ weekDates, currentDate, tasks = [] }: WeekVie
                     key={date.toISOString() + slot.toISOString()}
                     date={date}
                     time={slot}
-                    tasks={tasksForCell}
                     onClick={() => console.log("Clicked slot", date, slot)}
                   />
                 );
