@@ -9,4 +9,5 @@ export interface Task {
   expected_at: string;
   actual_at: string;
   created_at: string;
+  duration: number;
 }

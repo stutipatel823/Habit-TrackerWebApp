@@ -73,6 +73,7 @@ export default function Dashboard() {
 
       {/* Quick stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <Link href="/task">
         <Card className="shadow-md rounded-2xl">
           <CardContent className="flex items-center gap-3 p-4">
             <BarChart3 className="w-6 h-6 text-blue-500" />
@@ -82,7 +83,7 @@ export default function Dashboard() {
             </div>
           </CardContent>
         </Card>
-
+      </Link>
         <Card className="shadow-md rounded-2xl">
           <CardContent className="flex items-center gap-3 p-4">
             <CheckCircle className="w-6 h-6 text-green-500" />
