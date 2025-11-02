@@ -1,12 +1,13 @@
-import CalendarContainer from "@/components/calendar/common/CalendarContainer";
-import React from "react";
+// app/example/page
 
-function page() {
+import CalendarContainer from '@/components/calendar/common/CalendarContainer'
+import React from 'react'
+
+export default function Page() {
   return (
-    <div className="h-[100px]">
-      <CalendarContainer />
+    // parent takes full viewport height
+    <div className="flex flex-col">
+        <CalendarContainer />
     </div>
-  );
+  )
 }
-
-export default page;
