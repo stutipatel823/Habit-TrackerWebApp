@@ -1,4 +1,4 @@
-import { format, isToday, setHours, setMinutes, startOfDay } from "date-fns";
+import { format, startOfDay, setHours, setMinutes, isSameDay, parseISO } from "date-fns";
 import { tasks } from "@/data/tasksData";
 import { useMemo } from "react";
 import clsx from "clsx";
@@ -9,7 +9,6 @@ interface WeekViewProps {
   currentDate: Date;
 }
 
-// Memoize time slots to avoid recalculating on each render
 const generateTimeSlots = () => {
   const slots: Date[] = [];
   const today = startOfDay(new Date());
@@ -21,33 +20,33 @@ const generateTimeSlots = () => {
   return slots;
 };
 
-const TimeSlotRow = ({ slot, weekDates }: { slot: Date, weekDates: Date[] }) => {
-  const isHalfHour = slot.getMinutes() === 0;
-  const borderTopStyle = isHalfHour ? "border-dashed" : "";
+const TimeSlotRow = ({ slot, weekDates }: { slot: Date; weekDates: Date[] }) => {
+  const isHourMark = slot.getMinutes() === 0;
+  const borderTopStyle = isHourMark ? "border-dashed" : "";
 
   return (
     <div className={`grid grid-cols-8 text-center h-10 border-b ${borderTopStyle}`}>
-      {/* Time Label Column */}
       <div className="p-1 flex justify-center items-center text-gray-500 border-r">
         {format(slot, "h:mm a").toLowerCase()}
       </div>
-
-      {/* Empty cells for each weekday */}
-      {weekDates.map((date, i) => (
+      {weekDates.map((_, i) => (
         <div key={i} className="border-r" />
       ))}
     </div>
   );
 };
 
-export default function WeekView({ weekDates }: WeekViewProps) {
-  const todayString = new Date().toDateString(); // Calculate this once
+export default function WeekView({ weekDates, currentDate }: WeekViewProps) {
+  const todayString = new Date().toDateString();
   const timeSlots = useMemo(generateTimeSlots, []);
 
+  // Fixed height per 30-min slot
+  const slotHeight = 40; // 1 slot = 40px
+
   return (
-    <div className="border rounded-xl">
-      {/* Header Row */}
-      <div className="grid grid-cols-8 text-center border-b">
+    <div className="border rounded-xl relative overflow-hidden">
+      {/* Header */}
+      <div className="grid grid-cols-8 text-center border-b bg-gray-50">
         <div className="p-2 font-medium text-gray-600 border-r">Time</div>
         {weekDates.map((date, idx) => {
           const isCurrent = todayString === date.toDateString();
@@ -57,7 +56,7 @@ export default function WeekView({ weekDates }: WeekViewProps) {
               className={clsx(
                 "p-2",
                 idx < weekDates.length - 1 ? "border-r" : "",
-                isCurrent ? "text-brand-blue font-extrabold" : "text-gray-800 font-medium"
+                isCurrent ? "text-blue-600 font-extrabold" : "text-gray-800 font-medium"
               )}
             >
               {format(date, "EEE dd")}
@@ -66,15 +65,40 @@ export default function WeekView({ weekDates }: WeekViewProps) {
         })}
       </div>
 
-      {/* Time Slot Rows */}
+      {/* Grid */}
       <div className="relative">
         {timeSlots.map((slot, rowIndex) => (
           <TimeSlotRow key={rowIndex} slot={slot} weekDates={weekDates} />
         ))}
-      </div>
-      {/* Overlap Tasks */}
-      <div>
-        <WeekTask task={tasks[1]}/>
+
+        {/* Tasks */}
+        {tasks.map((task) => {
+          const start = parseISO(task.expected_at);
+          const dayIndex = weekDates.findIndex((d) => isSameDay(d, start));
+          if (dayIndex === -1) return null;
+
+          const startMinutes = start.getHours() * 60 + start.getMinutes();
+          const top = (startMinutes / 30) * slotHeight; // position by 30-min intervals
+          const height = (task.duration / 30) * slotHeight;
+
+          // Column width = (100% / 8 columns), skip first col (time labels)
+          const leftPercent = ((dayIndex + 1) / 8) * 100;
+
+          return (
+            <div
+              key={task.id}
+              className="absolute px-1"
+              style={{
+                top,
+                left: `calc(${leftPercent}% + 2px)`,
+                width: `calc(12.5% - 4px)`,
+                height,
+              }}
+            >
+              <WeekTask task={task} />
+            </div>
+          );
+        })}
       </div>
     </div>
   );
