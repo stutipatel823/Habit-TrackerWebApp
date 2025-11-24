@@ -1,10 +1,11 @@
+import os
 from fastapi import FastAPI
 from app.api import test
 from fastapi.middleware.cors import CORSMiddleware
 
 app = FastAPI()
 
-origins = ["http://localhost:3000"] # Frontend url
+origins = [os.getenv("FRONTEND_URL")] # Frontend url
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,

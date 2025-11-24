@@ -1,6 +1,5 @@
 # backend/app/api/test.py
 # https://supabase.com/docs/reference/python/initializing
-
 from fastapi import APIRouter
 from app.core.supabase_client import supabase
 
