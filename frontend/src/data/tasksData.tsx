@@ -64,8 +64,8 @@ export const tasks: Task[] = [
     description: "Run 2.5 miles around the park",
     color: "#FF5733",
     category: "Health",
-    expected_at: "2025-10-27T07:00:00Z",
-    actual_at: "2025-10-27T07:20:00Z",
+    expected_at: "2025-11-18T07:00:00Z",
+    actual_at: "2025-11-18T07:20:00Z",
     created_at: "2025-10-26T22:00:00Z",
     duration: 20
   },
@@ -77,8 +77,8 @@ export const tasks: Task[] = [
     description: "Review notes for the upcoming presentation",
     color: "#33FF57",
     category: "Education",
-    expected_at: "2025-10-27T08:30:00Z",
-    actual_at: "2025-10-27T08:40:00Z",
+    expected_at: "2025-11-18T08:30:00Z",
+    actual_at: "2025-11-18T08:40:00Z",
     created_at: "2025-10-26T22:05:00Z",
     duration: 45
   },
@@ -90,8 +90,8 @@ export const tasks: Task[] = [
     description: "Prepare oatmeal and fruit smoothie",
     color: "#FFD133",
     category: "Health",
-    expected_at: "2025-10-27T09:15:00Z",
-    actual_at: "2025-10-27T09:25:00Z",
+    expected_at: "2025-11-18T09:15:00Z",
+    actual_at: "2025-11-18T09:25:00Z",
     created_at: "2025-10-26T22:15:00Z",
     duration: 30
   },
@@ -103,8 +103,8 @@ export const tasks: Task[] = [
     description: "Focus on key project tasks without distractions",
     color: "#33C1FF",
     category: "Work",
-    expected_at: "2025-10-27T10:00:00Z",
-    actual_at: "2025-10-27T10:05:00Z",
+    expected_at: "2025-11-18T10:00:00Z",
+    actual_at: "2025-11-18T10:05:00Z",
     created_at: "2025-10-26T22:20:00Z",
     duration: 120
   },
@@ -116,8 +116,8 @@ export const tasks: Task[] = [
     description: "Strength training — upper body focus",
     color: "#FF33A8",
     category: "Fitness",
-    expected_at: "2025-10-27T17:00:00Z",
-    actual_at: "2025-10-27T17:10:00Z",
+    expected_at: "2025-11-18T17:00:00Z",
+    actual_at: "2025-11-18T17:10:00Z",
     created_at: "2025-10-26T22:30:00Z",
     duration: 60
   },
@@ -129,8 +129,8 @@ export const tasks: Task[] = [
     description: "Write down 3 things I’m grateful for today",
     color: "#8844FF",
     category: "Wellness",
-    expected_at: "2025-10-27T21:30:00Z",
-    actual_at: "2025-10-27T21:40:00Z",
+    expected_at: "2025-11-18T21:30:00Z",
+    actual_at: "2025-11-18T21:40:00Z",
     created_at: "2025-10-26T22:45:00Z",
     duration: 15
   }

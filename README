@@ -1,0 +1,204 @@
+## Project Overview
+
+This project is a **full-stack application** with:
+
+* **Frontend:** Next.js 14+ (React)
+* **Backend:** FastAPI (Python 3.11+)
+* **Database/Auth:** Supabase
+
+The architecture is designed to separate concerns:
+
+* Frontend handles the UI and calls backend endpoints
+* Backend handles API routes, communicates with Supabase, and enforces RLS policies
+
+---
+
+## **Folder Structure**
+
+```
+Project/
+├─ frontend/                 # Next.js frontend
+│   ├─ .env.local             # Supabase anon key (public)
+│   ├─ package.json
+│   ├─ src/
+│   │   ├─ lib/
+│   │   │   ├─ supabaseClient.ts
+│   │   │   └─ types/
+│   │   └─ components/
+│   └─ public/
+├─ backend/                  # FastAPI backend
+│   ├─ .env                   # Supabase service role key
+│   ├─ venv/                  # Python virtual environment
+│   ├─ requirements.txt
+│   └─ app/
+│       ├─ __init__.py
+│       ├─ main.py            # FastAPI app entry point
+│       ├─ core/
+│       │   ├─ __init__.py
+│       │   └─ supabase_client.py
+│       └─ api/
+│           ├─ __init__.py
+│           └─ test.py
+└─ README.md
+```
+
+---
+
+## **Frontend Setup (Next.js)**
+
+### 1. Install dependencies
+
+```bash
+cd frontend
+npm install
+```
+
+### 2. Add `.env.local` in frontend root
+
+```env
+NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key_here
+```
+
+> Use the **anon key**, which is safe for client-side requests with RLS enabled.
+
+### 3. Supabase client setup (`src/lib/supabaseClient.ts`)
+
+```ts
+import { createClient } from '@supabase/supabase-js'
+
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey)
+```
+
+### 4. Run frontend
+
+```bash
+npm run dev
+```
+
+Open `http://localhost:3000` in your browser.
+
+---
+
+## **Backend Setup (FastAPI + Supabase)**
+
+### 1. Create virtual environment
+
+```bash
+cd backend
+python3 -m venv venv
+source venv/bin/activate   # macOS/Linux
+# .\venv\Scripts\activate  # Windows
+```
+
+### 2. Install dependencies
+
+```bash
+pip install fastapi uvicorn supabase python-dotenv
+```
+
+### 3. Create `.env` in backend root
+
+```env
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_SERVICE_KEY=your_service_role_key_here
+```
+
+> Use the **service role key**, never expose this to the frontend.
+
+### 4. Supabase client (`app/core/supabase_client.py`)
+
+```python
+import os
+from dotenv import load_dotenv
+from supabase import create_client, Client
+
+load_dotenv()
+
+url: str = os.environ["SUPABASE_URL"]
+key: str = os.environ["SUPABASE_SERVICE_KEY"]
+
+supabase: Client = create_client(url, key)
+```
+
+### 5. FastAPI main app (`app/main.py`)
+
+```python
+from fastapi import FastAPI
+from app.api import test
+
+app = FastAPI()
+
+app.include_router(test.router)
+
+@app.get("/")
+async def root():
+    return {"message": "FastAPI is running!"}
+```
+
+### 6. Sample API route (`app/api/test.py`)
+
+```python
+from fastapi import APIRouter
+from app.core.supabase_client import supabase
+
+router = APIRouter(prefix="/test")
+
+@router.get("/")
+async def test_connection():
+    response = supabase.from_("tasks").select("*").execute()
+    return {"data": response.data}
+```
+
+### 7. Run backend
+
+```bash
+uvicorn app.main:app --reload --port 8000
+```
+
+* Root: `http://127.0.0.1:8000/` → FastAPI running
+* Test API: `http://127.0.0.1:8000/test/` → Fetches data from Supabase
+
+---
+
+## **Important Notes**
+
+* **`__pycache__/` folders**: Auto-generated Python bytecode cache — safe to ignore
+* **Port conflicts**: If you get `Address already in use`, kill the old process or change the port (`--port 8001`)
+* **Environment variables**:
+
+  * Frontend → anon key (browser-safe, respects RLS)
+  * Backend → service role key (server-only, bypasses RLS)
+* **VS Code setup**: Make sure the correct Python interpreter is selected (your `venv`)
+* **.gitignore**: Ignore `.env`, `venv/`, and `__pycache__/`
+
+---
+
+## **Frontend → Backend Flow**
+
+```
+Next.js (frontend)
+        │
+        │ fetch("/test/")
+        ▼
+FastAPI backend (/test/ endpoint)
+        │
+        │ Supabase client calls
+        ▼
+Supabase database
+```
+
+* Frontend never talks directly to the **service role key**
+* Backend enforces security and RLS policies
+
+---
+
+## **Optional Tips**
+
+* Use `APIRouter` prefixes to organize routes (`/api/v1/...`)
+* Keep frontend types in `src/lib/types`
+* Keep backend modules in `app/core` for reusable clients or utilities
+

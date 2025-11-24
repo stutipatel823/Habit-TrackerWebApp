@@ -20,16 +20,20 @@ const generateTimeSlots = () => {
   return slots;
 };
 
-const TimeSlotRow = ({ slot, weekDates }: { slot: Date; weekDates: Date[] }) => {
+const TimeSlotRow = ({ slot, weekDates, slotHeight }: { slot: Date; weekDates: Date[]; slotHeight: number }) => {
   const isHourMark = slot.getMinutes() === 0;
   const borderTopStyle = isHourMark ? "border-dashed" : "";
 
+  // Use inline height to ensure the DOM row height always equals slotHeight
   return (
-    <div className={`grid grid-cols-8 text-center h-10 border-b ${borderTopStyle}`}>
-      <div className="p-1 flex justify-center items-center text-gray-500 border-r">
+    <div
+      className={`grid grid-cols-8 text-center border-b ${borderTopStyle}`}
+      style={{ height: `${slotHeight}px` }}
+    >
+      <div className="p-1 flex justify-center items-center text-gray-500 border-r ">
         {format(slot, "h:mm a").toLowerCase()}
       </div>
-      {weekDates.map((_, i) => (
+      {weekDates.map((d, i) => (
         <div key={i} className="border-r" />
       ))}
     </div>
@@ -40,8 +44,13 @@ export default function WeekView({ weekDates, currentDate }: WeekViewProps) {
   const todayString = new Date().toDateString();
   const timeSlots = useMemo(generateTimeSlots, []);
 
-  // Fixed height per 30-min slot
-  const slotHeight = 40; // 1 slot = 40px
+  // Fixed height per 30-min slot (in px)
+  const slotHeight = 40; // 1 slot (30min) = 40px
+  const totalHeight = timeSlots.length * slotHeight;
+
+  // column widths (8 equal columns: 1 time column + 7 day columns)
+  const columns = 8;
+  const columnWidthPercent = 100 / columns; // 12.5%
 
   return (
     <div className="border rounded-xl relative overflow-hidden">
@@ -65,10 +74,10 @@ export default function WeekView({ weekDates, currentDate }: WeekViewProps) {
         })}
       </div>
 
-      {/* Grid */}
-      <div className="relative">
+      {/* Grid: give it an explicit height so absolutely-positioned tasks line up */}
+      <div className="relative" style={{ height: `${totalHeight}px` }}>
         {timeSlots.map((slot, rowIndex) => (
-          <TimeSlotRow key={rowIndex} slot={slot} weekDates={weekDates} />
+          <TimeSlotRow key={rowIndex} slot={slot} weekDates={weekDates} slotHeight={slotHeight} />
         ))}
 
         {/* Tasks */}
@@ -77,22 +86,31 @@ export default function WeekView({ weekDates, currentDate }: WeekViewProps) {
           const dayIndex = weekDates.findIndex((d) => isSameDay(d, start));
           if (dayIndex === -1) return null;
 
+          // start in minutes from midnight
           const startMinutes = start.getHours() * 60 + start.getMinutes();
-          const top = (startMinutes / 30) * slotHeight; // position by 30-min intervals
+
+          // top position in px (each 30 minutes => slotHeight px)
+          const top = (startMinutes / 30) * slotHeight;
+
+          // task.duration is assumed in minutes (if it's hours, multiply accordingly)
           const height = (task.duration / 30) * slotHeight;
 
-          // Column width = (100% / 8 columns), skip first col (time labels)
-          const leftPercent = ((dayIndex + 1) / 8) * 100;
+          // left/width as percentages (skip first column which is time)
+          const leftPercent = ((dayIndex + 1) / columns) * 100; // +1 to skip time column
+          const widthCalc = `${columnWidthPercent}%`; // e.g. "12.5%"
 
           return (
             <div
               key={task.id}
               className="absolute px-1"
               style={{
-                top,
+                top: `${top}px`,
                 left: `calc(${leftPercent}% + 2px)`,
-                width: `calc(12.5% - 4px)`,
-                height,
+                width: `calc(${widthCalc} - 4px)`,
+                height: `${height}px`,
+                // small niceties
+                zIndex: 10,
+                overflow: "hidden",
               }}
             >
               <WeekTask task={task} />
