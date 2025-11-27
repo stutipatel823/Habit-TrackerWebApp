@@ -1,11 +1,13 @@
+# app/main.py
 import os
 from fastapi import FastAPI
-from app.api import test
 from fastapi.middleware.cors import CORSMiddleware
+from app.routers.schedule_route import router as schedule_router
 
 app = FastAPI()
 
-origins = [os.getenv("FRONTEND_URL")] # Frontend url
+origins = [os.getenv("FRONTEND_URL")]  # Your frontend URL
+
 app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
@@ -14,11 +16,8 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+app.include_router(schedule_router)
 
-app.include_router(test.testRouter)
-app.include_router(test.helloRouter)
-
-# Add a root test route
 @app.get("/")
 async def root():
     return {"message": "FastAPI is running!"}
