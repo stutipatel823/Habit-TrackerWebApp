@@ -1,8 +1,6 @@
-import { Task } from './types/task';
-
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL
 
-export async function getTasksFromBackend(start_ts: Date, end_ts: Date): Promise<Task[]> {
+export async function getExpectedScheduleItems(start_ts: Date, end_ts: Date) {
     const res = await fetch(`${backendUrl}/expected/range`, {
         method: 'POST',
         headers: {

@@ -1,8 +1,16 @@
-import { format, startOfDay, setHours, setMinutes, isSameDay, parseISO } from "date-fns";
-import { tasks } from "@/data/tasksData";
-import { useMemo } from "react";
+import {
+  format,
+  startOfDay,
+  setHours,
+  setMinutes,
+  isSameDay,
+  parseISO,
+} from "date-fns";
+import { useEffect, useMemo, useState } from "react";
 import clsx from "clsx";
 import WeekTask from "./WeekTask";
+import { getExpectedScheduleItems } from "@/api/expected_api";
+import type { ScheduleItem } from "@/lib/types/schedule";
 
 interface WeekViewProps {
   weekDates: Date[];
@@ -20,11 +28,18 @@ const generateTimeSlots = () => {
   return slots;
 };
 
-const TimeSlotRow = ({ slot, weekDates, slotHeight }: { slot: Date; weekDates: Date[]; slotHeight: number }) => {
+const TimeSlotRow = ({
+  slot,
+  weekDates,
+  slotHeight,
+}: {
+  slot: Date;
+  weekDates: Date[];
+  slotHeight: number;
+}) => {
   const isHourMark = slot.getMinutes() === 0;
   const borderTopStyle = isHourMark ? "border-dashed" : "";
 
-  // Use inline height to ensure the DOM row height always equals slotHeight
   return (
     <div
       className={`grid grid-cols-8 text-center border-b ${borderTopStyle}`}
@@ -41,16 +56,33 @@ const TimeSlotRow = ({ slot, weekDates, slotHeight }: { slot: Date; weekDates: D
 };
 
 export default function WeekView({ weekDates, currentDate }: WeekViewProps) {
+  const [scheduleItems, setScheduleItems] = useState<ScheduleItem[]>([]);
+
+  useEffect(() => {
+    (async () => {
+      const items = await getExpectedScheduleItems(weekDates[0], weekDates[6]);
+
+      // Compute duration if not provided
+      const normalized = items.map((item: ScheduleItem) => {
+        const duration =
+          new Date(item.end_time).getTime() -
+          new Date(item.start_time).getTime();
+
+        return { ...item, duration };
+      });
+
+      setScheduleItems(normalized);
+    })();
+  }, [weekDates]);
+
   const todayString = new Date().toDateString();
   const timeSlots = useMemo(generateTimeSlots, []);
 
-  // Fixed height per 30-min slot (in px)
-  const slotHeight = 40; // 1 slot (30min) = 40px
+  const slotHeight = 40;
   const totalHeight = timeSlots.length * slotHeight;
 
-  // column widths (8 equal columns: 1 time column + 7 day columns)
   const columns = 8;
-  const columnWidthPercent = 100 / columns; // 12.5%
+  const columnWidthPercent = 100 / columns;
 
   return (
     <div className="border rounded-xl relative overflow-hidden">
@@ -65,7 +97,9 @@ export default function WeekView({ weekDates, currentDate }: WeekViewProps) {
               className={clsx(
                 "p-2",
                 idx < weekDates.length - 1 ? "border-r" : "",
-                isCurrent ? "text-blue-600 font-extrabold" : "text-gray-800 font-medium"
+                isCurrent
+                  ? "text-blue-600 font-extrabold"
+                  : "text-gray-800 font-medium"
               )}
             >
               {format(date, "EEE dd")}
@@ -74,46 +108,46 @@ export default function WeekView({ weekDates, currentDate }: WeekViewProps) {
         })}
       </div>
 
-      {/* Grid: give it an explicit height so absolutely-positioned tasks line up */}
+      {/* Grid container */}
       <div className="relative" style={{ height: `${totalHeight}px` }}>
         {timeSlots.map((slot, rowIndex) => (
-          <TimeSlotRow key={rowIndex} slot={slot} weekDates={weekDates} slotHeight={slotHeight} />
+          <TimeSlotRow
+            key={rowIndex}
+            slot={slot}
+            weekDates={weekDates}
+            slotHeight={slotHeight}
+          />
         ))}
 
-        {/* Tasks */}
-        {tasks.map((task) => {
-          const start = parseISO(task.expected_at);
+        {/* Schedule Items */}
+        {scheduleItems.map((item) => {
+          const start = parseISO(item.start_time);
           const dayIndex = weekDates.findIndex((d) => isSameDay(d, start));
           if (dayIndex === -1) return null;
 
-          // start in minutes from midnight
-          const startMinutes = start.getHours() * 60 + start.getMinutes();
+          const startMinutes =
+            start.getHours() * 60 + start.getMinutes();
 
-          // top position in px (each 30 minutes => slotHeight px)
           const top = (startMinutes / 30) * slotHeight;
+          const height = (item.duration! / 1000 / 60 / 30) * slotHeight;
 
-          // task.duration is assumed in minutes (if it's hours, multiply accordingly)
-          const height = (task.duration / 30) * slotHeight;
-
-          // left/width as percentages (skip first column which is time)
-          const leftPercent = ((dayIndex + 1) / columns) * 100; // +1 to skip time column
-          const widthCalc = `${columnWidthPercent}%`; // e.g. "12.5%"
+          const leftPercent = ((dayIndex + 1) / columns) * 100;
+          const widthCalc = `${columnWidthPercent}%`;
 
           return (
             <div
-              key={task.id}
+              key={item.schedule_id}
               className="absolute px-1"
               style={{
                 top: `${top}px`,
                 left: `calc(${leftPercent}% + 2px)`,
                 width: `calc(${widthCalc} - 4px)`,
                 height: `${height}px`,
-                // small niceties
                 zIndex: 10,
                 overflow: "hidden",
               }}
             >
-              <WeekTask task={task} />
+              <WeekTask item={item} />
             </div>
           );
         })}
