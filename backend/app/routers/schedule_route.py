@@ -8,3 +8,4 @@ router = APIRouter(prefix="/expected", tags=["Expected Schedule"])
 @router.post("/range")
 async def get_expected_range(body: DateRange):
     return fetch_expected_schedule(body.start_ts, body.end_ts)
+

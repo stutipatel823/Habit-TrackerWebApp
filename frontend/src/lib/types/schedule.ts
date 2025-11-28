@@ -2,10 +2,16 @@
 export type ScheduleItem = {
   schedule_id: string;
   title: string;
+  icon: string;
+  color: string;
   start_time: string;
   end_time: string;
-  color: string;
-  icon: string;
   is_habit: boolean;
-  duration?: number; // computed on frontend
+  duration: number; 
 };
+
+export interface PositionedScheduleItem extends ScheduleItem {
+  dayIndex: number;
+  top: number;
+  height: number;
+}
