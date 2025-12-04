@@ -2,9 +2,10 @@ import { useEffect, useMemo, useState } from "react";
 import { generateTimeSlots } from "./utils/timeSlots";
 import { positionItems } from "./utils/positionItems";
 import WeekHeader from "./WeekHeader";
-import WeekTimeSlotRow from "./WeekTimeSlotRow";
+import WeekSlotGrid from "./WeekSlotGrid";
 import WeekTask from "./WeekTask";
 import { getExpectedScheduleItems } from "@/api/expected_api";
+
 import type { PositionedScheduleItem, ScheduleItem } from "@/lib/types/schedule";
 
 interface WeekViewProps {
@@ -16,6 +17,7 @@ export default function WeekView({ weekDates }: WeekViewProps) {
   const [scheduleItems, setScheduleItems] = useState<ScheduleItem[]>([]);
   const slotHeight = 40;
 
+  // Fetch schedule items for this week
   useEffect(() => {
     (async () => {
       const items = await getExpectedScheduleItems(weekDates[0], weekDates[6]);
@@ -23,8 +25,10 @@ export default function WeekView({ weekDates }: WeekViewProps) {
     })();
   }, [weekDates]);
 
+  // Only calculated ONCE
   const timeSlots = useMemo(() => generateTimeSlots(), []);
 
+  // Calculated only when items or dates change
   const positionedItems = useMemo(
     () => positionItems(scheduleItems, weekDates, slotHeight),
     [scheduleItems, weekDates]
@@ -36,27 +40,23 @@ export default function WeekView({ weekDates }: WeekViewProps) {
 
   return (
     <div className="border rounded-xl overflow-hidden">
-      {/* Header */}
+      {/* Week header */}
       <WeekHeader weekDates={weekDates} />
 
-      {/* Grid */}
+      {/* The grid */}
       <div className="relative" style={{ height: `${totalHeight}px` }}>
-        {timeSlots.map((slot, idx) => (
-          <WeekTimeSlotRow
-            key={idx}
-            slot={slot}
-            weekDates={weekDates}
-            slotHeight={slotHeight}
-          />
-        ))}
+        <WeekSlotGrid
+          timeSlots={timeSlots}
+          slotHeight={slotHeight}
+        />
 
-        {/* Tasks (directly here) */}
+        {/* Tasks overlay */}
         {positionedItems.map((item: PositionedScheduleItem) => {
           const leftPercent = ((item.dayIndex + 1) / columns) * 100;
 
           return (
             <div
-              key={item.schedule_id}
+              key={`${item.item_id}-${item.top}-${item.dayIndex}`}
               className="absolute px-1 z-10 overflow-hidden"
               style={{
                 top: `${item.top}px`,

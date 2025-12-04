@@ -1,6 +1,6 @@
 // src/lib/types/schedule.ts
 export type ScheduleItem = {
-  schedule_id: string;
+  item_id: string;
   title: string;
   icon: string;
   color: string;

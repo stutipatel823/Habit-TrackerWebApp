@@ -1,15 +1,13 @@
-// components/week/TimeSlotRow.tsx
+// components/week/WeekTimeSlotRow.tsx
+import { memo } from "react";
 import { format } from "date-fns";
 
-export default function WeekTimeSlotRow({
-  slot,
-  weekDates,
-  slotHeight,
-}: {
+interface Props {
   slot: Date;
-  weekDates: Date[];
   slotHeight: number;
-}) {
+}
+
+function WeekTimeSlotRow({ slot, slotHeight }: Props) {
   const isHourMark = slot.getMinutes() === 0;
 
   return (
@@ -19,13 +17,17 @@ export default function WeekTimeSlotRow({
       }`}
       style={{ height: `${slotHeight}px` }}
     >
+      {/* Time label */}
       <div className="p-1 flex justify-center items-center text-gray-500 border-r">
         {format(slot, "h:mm a").toLowerCase()}
       </div>
 
-      {weekDates.map((_, i) => (
+      {/* Empty 7 day columns */}
+      {[...Array(7)].map((_, i) => (
         <div key={i} className="border-r" />
       ))}
     </div>
   );
 }
+
+export default memo(WeekTimeSlotRow);
