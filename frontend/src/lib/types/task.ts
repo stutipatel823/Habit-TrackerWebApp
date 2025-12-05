@@ -1,7 +1,8 @@
 export interface Task {
   id: string;
   user_id: string;
-  habit_id: string;
+  task_id?: string;
+  habit_id?:string;
   title: string;
   description: string;
   color: string;

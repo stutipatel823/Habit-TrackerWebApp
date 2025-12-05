@@ -1,6 +1,11 @@
+// app/layout.tsx
 import type { Metadata } from "next";
 import { Urbanist } from "next/font/google";
 import "./globals.css";
+import "react-datepicker/dist/react-datepicker.css";
+import "./styles/datepicker.css";
+
+
 
 const urbanist = Urbanist({
   variable: "--font-urbanist",

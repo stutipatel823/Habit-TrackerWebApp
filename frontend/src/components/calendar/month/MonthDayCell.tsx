@@ -1,24 +1,22 @@
+// components/month/MonthDayTask.tsx
+
 import { isSameDay, isToday, format } from "date-fns";
 import MonthTask from "./MonthTask";
-import { tasks } from "@/data/tasksData";
+import type { ScheduleItem } from "@/lib/types/schedule";
 
 interface MonthDayCellProps {
   day: Date;
-  monthStart: Date;
+  tasks: ScheduleItem[]; // tasks for this day only
   isLastRow?: boolean;
   isLastCol?: boolean;
 }
 
 export default function MonthDayCell({
   day,
-  monthStart,
+  tasks,
   isLastRow = false,
   isLastCol = false,
 }: MonthDayCellProps) {
-  const dayTasks = tasks.filter((task) =>
-    isSameDay(new Date(task.expected_at), day)
-  );
-
   return (
     <div
       className={`
@@ -38,11 +36,14 @@ export default function MonthDayCell({
 
       {/* Tasks */}
       <div className="flex flex-col gap-1 w-full">
-        {dayTasks.slice(0, 3).map((task) => (
-          <MonthTask key={task.id} task={task} />
+        {tasks.slice(0, 3).map((task, index) => (
+          <MonthTask key={`${task.item_id}-${index}`} task={task} />
         ))}
-        {dayTasks.length > 3 && (
-          <span className="text-gray-500 text-xs">+{dayTasks.length - 3} more</span>
+
+        {tasks.length > 3 && (
+          <span className="text-gray-500 text-xs">
+            +{tasks.length - 3} more
+          </span>
         )}
       </div>
     </div>

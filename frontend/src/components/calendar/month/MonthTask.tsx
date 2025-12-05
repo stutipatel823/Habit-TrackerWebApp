@@ -1,10 +1,10 @@
 // components/month/MonthTask.tsx
 import React from "react";
-import { Task } from "@/lib/types/task";
 import { format } from "date-fns";
+import { ScheduleItem } from "@/lib/types/schedule";
 
 type TaskItemProps = {
-  task: Task;
+  task: ScheduleItem;
 };
 
 function MonthTask({ task }: TaskItemProps) {
@@ -18,12 +18,14 @@ function MonthTask({ task }: TaskItemProps) {
         className="mx-1.5 h-4 w-1 rounded-2xl shrink-0"
         style={{ backgroundColor: task.color}}
       ></div>
-
+     
       {/* Time with fixed width */}
       <p className="text-neutral-500 truncate overflow-hidden  text-xs w-12 text-right flex-shrink-0">
-        {format(new Date(task.expected_at), "hh:mma").toLowerCase()}
+        { format(new Date(task.start_time), "hh:mma").toLowerCase()}
       </p>
-       
+      <div className="ml-1">
+        {task.icon}
+      </div>
       {/* Dot (larger) */}
       {/* <span className="mx-1" style={{ color: task.color}}>●</span> */}
       
