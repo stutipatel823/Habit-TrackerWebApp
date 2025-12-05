@@ -1,6 +1,17 @@
 export interface Task {
   id: string;
   user_id: string;
+  title: string;
+  icon: string;
+  color: string;
+  is_recurring: boolean;
+  recurring_rule?: string;
+  created_at: string;
+  updated_at: string;
+}
+export interface MockTask {
+  id: string;
+  user_id: string;
   task_id?: string;
   habit_id?:string;
   title: string;

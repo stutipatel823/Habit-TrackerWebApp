@@ -1,0 +1,69 @@
+"use client";
+import React, { useState, useEffect } from "react";
+import { Task } from "@/lib/types/task";
+import { getAllTasks } from "@/api/task_api";
+
+export default function TaskDropdown() {
+  const [allTasks, setAllTasks] = useState<Task[]>([]);
+  const [open, setOpen] = useState(false);
+  const [selected, setSelected] = useState<Task | null>(null);
+
+  useEffect(() => {
+    const fetchTasks = async () => {
+      const res = await getAllTasks();
+      setAllTasks(res);
+    };
+    fetchTasks(); // runs only once
+  }, []); // empty dependency array ensures it runs only on mount
+
+  return (
+    <div className="relative w-full p-2">
+      {/* Selected item */}
+      <button
+        onClick={() => setOpen(!open)}
+        className="w-full border border-black px-3 py-2 flex items-center justify-between"
+      >
+        {selected ? (
+          <div className="flex items-center space-x-2">
+            <span
+              className="w-1 h-5 rounded-full"
+              style={{ background: selected.color }}
+            />
+            <span>{selected.icon}</span>
+            <span>{selected.title}</span>
+          </div>
+        ) : (
+          <span className="text-gray-500">Select a task...</span>
+        )}
+        <span>▼</span>
+      </button>
+
+      {/* Dropdown options */}
+      {open && (
+        <div
+          className="absolute z-10 w-full bg-white shadow-lg rounded-md border border-black 
+                    mt-2 p-2 space-y-2 max-h-60 overflow-y-auto animate-fadeIn"
+        >
+          {allTasks.map((task) => (
+            <div
+              key={task.id}
+              onClick={() => {
+                setSelected(task);
+                setOpen(false);
+              }}
+              className="px-2 py-2 bg-gray-50 rounded-md cursor-pointer
+                        hover:bg-gray-100 transition-all flex items-center space-x-3"
+            >
+              <span
+                className="w-1 h-5 rounded-full"
+                style={{ background: task.color }}
+              />
+              <span className="opacity-80">{task.icon}</span>
+              <span className="font-medium">{task.title}</span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
+}
