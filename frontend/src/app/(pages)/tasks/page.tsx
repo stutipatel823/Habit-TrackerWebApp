@@ -1,3 +1,4 @@
+"use client";
 import TaskDropdown from '@/components/ui/task-form/TaskDropdown'
 import TaskList from '@/components/ui/task-form/TaskList'
 import React, { useState } from 'react'
