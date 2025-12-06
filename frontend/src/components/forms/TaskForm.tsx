@@ -1,98 +1,62 @@
 "use client";
 import { useState } from "react";
-import DateTimeSelector from "@/components/ui/task-form/DateTimeSelector";
-import TaskTitle from "@/components/ui/task-form/TaskTitle";
+import { X } from "lucide-react";
+import TaskSelectOrAdd from "../ui/task-form/TaskSelectOrAdd";
 import ColorPicker from "@/components/ui/task-form/ColorPicker";
 import IconSelector from "@/components/ui/task-form/IconSelector";
-import TaskDescription from "@/components/ui/task-form/TaskDescription";
+import DateTimeSelector from "@/components/ui/task-form/DateTimeSelector";
 import DeadlinePicker from "@/components/ui/task-form/DeadlinePicker";
+import TaskDescription from "@/components/ui/task-form/TaskDescription";
+import { Task } from "@/lib/types/task";
 
-interface Task {
-  id: number;
-  title: string;
-  color: string;
-}
-
-const existingTasks: Task[] = [
-  { id: 1, title: "Morning Exercise", color: "#F87171" },
-  { id: 2, title: "Team Meeting", color: "#3B82F6" },
-  { id: 3, title: "Read Book", color: "#10B981" },
-];
-
-export default function TaskForm() {
-  const [date, setDate] = useState<Date | null>(new Date());
+export default function TaskForm({ onClose }: { onClose: () => void }) {
+  const [selectedTask, setSelectedTask] = useState<Task | null>(null);
   const [title, setTitle] = useState("");
+  const [color, setColor] = useState("#000");
+  const [icon, setIcon] = useState("");
+  const [date, setDate] = useState<Date | null>(new Date());
   const [description, setDescription] = useState("");
-  const [color, setColor] = useState("#3b82f6");
-  const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
-
-  const handleTaskSelect = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const taskId = parseInt(e.target.value);
-    setSelectedTaskId(taskId);
-
-    const task = existingTasks.find((t) => t.id === taskId);
-    if (task) {
-      setTitle(task.title);
-      setColor(task.color);
-    } else {
-      setTitle("");
-    }
-  };
-
-  // Helper for semi-transparent card background
-  const rgba = (hex: string, alpha: number) => {
-    const r = parseInt(hex.slice(1, 3), 16);
-    const g = parseInt(hex.slice(3, 5), 16);
-    const b = parseInt(hex.slice(5, 7), 16);
-    return `rgba(${r},${g},${b},${alpha})`;
-  };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
-      <div
-        className="bg-white rounded-2xl p-6 flex flex-col space-y-6 shadow-md w-fit border-2"
+    <div className="relative bg-white rounded-2xl p-8 flex flex-col space-y-6 shadow-xl w-fit border">
+
+      <button
+        onClick={onClose}
+        className="absolute top-3 right-3 text-gray-500 hover:text-gray-700"
       >
-        {/* Top handle */}
-        <div className="w-full h-2 rounded-2xl" style={{backgroundColor:color}}></div>
-        
-        {/* Task Title + Existing Tasks Dropdown */}
-        <div className="flex items-center space-x-2 w-full focus:outline-none">
-          <TaskTitle
-            title={title}
-            setTitle={setTitle}
-          />
-          <select
-            value={ 
-              selectedTaskId !== null && !Number.isNaN(selectedTaskId)
-                ? String(selectedTaskId)
-                : ""
-            }
-            onChange={handleTaskSelect}
-            className="border rounded-md px-2 py-2 focus:outline-none"
-          >
-            <option value="">Select existing task</option>
-            {existingTasks.map((task) => (
-              <option key={task.id} value={task.id}>
-                {task.title}
-              </option>
-            ))}
-          </select>
-        </div>
+        <X size={20} />
+      </button>
 
-        <ColorPicker color={color} setColor={setColor} />
-        <IconSelector />
-        <DateTimeSelector />
-        <DeadlinePicker date={date} setDate={setDate} />
-        <TaskDescription description={description} setDescription={setDescription} />
+      <TaskSelectOrAdd
+        selectedTask={selectedTask}
+        setSelectedTask={setSelectedTask}
+        title={title}
+        setTitle={setTitle}
+      />
 
-        {/* Save */}
-        <button
-          className="self-end text-white px-4 py-2 rounded-lg transition hover:brightness-110"
-          style={{ backgroundColor: color }}
-        >
-          Save
-        </button>
-      </div>
+      {/* Color picker: fixed if task selected */}
+      <ColorPicker
+        color={selectedTask ? selectedTask.color : color}
+        setColor={selectedTask ? () => {} : setColor} // editable only if no task
+      />
+
+
+      {/* Icon selector: fixed if task selected */}
+      <IconSelector
+        icon={selectedTask ? selectedTask.icon : icon}
+        setIcon={selectedTask ? undefined : setIcon}
+      />
+
+      <DateTimeSelector />
+      <DeadlinePicker date={date} setDate={setDate} />
+      <TaskDescription description={description} setDescription={setDescription} />
+
+      <button
+        className="self-end text-white px-4 py-2 rounded-lg"
+        style={{ backgroundColor: selectedTask ? selectedTask.color : color }}
+      >
+        Save
+      </button>
     </div>
   );
 }

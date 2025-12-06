@@ -17,7 +17,7 @@ export default function MonthGrid({ currentDate }: MonthGridProps) {
   const calendarEnd = endOfWeek(monthEnd, { weekStartsOn: 0 });
 
   const [allTasks, setAllTasks] = useState<ScheduleItem[]>([]);
-
+  const monthKey = `${currentDate.getFullYear()}-${currentDate.getMonth()}`;
   // Fetch all tasks for the calendar range at once
   useEffect(() => {
     const fetchMonthTasks = async () => {
@@ -29,7 +29,7 @@ export default function MonthGrid({ currentDate }: MonthGridProps) {
       }
     };
     fetchMonthTasks();
-  }, [calendarStart, calendarEnd]);
+  }, [monthKey]);
 
   // Build the calendar days
   const days: Date[] = [];

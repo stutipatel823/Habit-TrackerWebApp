@@ -142,3 +142,8 @@
     @apply cursor-pointer;
   }
 }
+@layer utilities {
+  .transition-width {
+    transition: width 300ms ease;
+  }
+}

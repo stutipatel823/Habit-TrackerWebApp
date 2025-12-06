@@ -2,11 +2,16 @@
 import React, { useState, useEffect } from "react";
 import { Task } from "@/lib/types/task";
 import { getAllTasks } from "@/api/task_api";
+import { ChevronDown } from "lucide-react";
 
-export default function TaskDropdown() {
+interface TaskDropdownProps {
+  selectedTask: Task | null;
+  setSelectedTask: (task: Task | null) => void;
+}
+
+export default function TaskDropdown({ selectedTask, setSelectedTask }:TaskDropdownProps) {
   const [allTasks, setAllTasks] = useState<Task[]>([]);
   const [open, setOpen] = useState(false);
-  const [selected, setSelected] = useState<Task | null>(null);
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -17,25 +22,25 @@ export default function TaskDropdown() {
   }, []); // empty dependency array ensures it runs only on mount
 
   return (
-    <div className="relative w-full p-2">
+    <div className="relative w-full">
       {/* Selected item */}
       <button
         onClick={() => setOpen(!open)}
         className="w-full border border-black px-3 py-2 flex items-center justify-between"
       >
-        {selected ? (
+        {selectedTask ? (
           <div className="flex items-center space-x-2">
             <span
               className="w-1 h-5 rounded-full"
-              style={{ background: selected.color }}
+              style={{ background: selectedTask.color }}
             />
-            <span>{selected.icon}</span>
-            <span>{selected.title}</span>
+            <span>{selectedTask.icon}</span>
+            <span>{selectedTask.title}</span>
           </div>
         ) : (
           <span className="text-gray-500">Select a task...</span>
         )}
-        <span>▼</span>
+        <span><ChevronDown size={20} /></span>
       </button>
 
       {/* Dropdown options */}
@@ -48,7 +53,7 @@ export default function TaskDropdown() {
             <div
               key={task.id}
               onClick={() => {
-                setSelected(task);
+                setSelectedTask(task);
                 setOpen(false);
               }}
               className="px-2 py-2 bg-gray-50 rounded-md cursor-pointer
