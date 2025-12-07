@@ -7,10 +7,16 @@ import TimePicker from "./TimePicker";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 
-export default function DateTimeSelector() {
-  const [startTime, setStartTime] = useState("8:00 am");
-  const [endTime, setEndTime] = useState("8:00 am");
-  const [date, setDate] = useState<Date>(new Date());
+interface DateTimeSelectorProps {
+  date: Date | null;
+  setDate: (d: Date | null) => void;
+  startTime: string;
+  setStartTime: (t: string) => void;
+  endTime: string;
+  setEndTime: (t: string) => void;
+}
+
+export default function DateTimeSelector({ date, setDate, startTime, setStartTime, endTime, setEndTime }: DateTimeSelectorProps) {
   const [openPicker, setOpenPicker] = useState<"start" | "end" | null>(null);
 
   return (

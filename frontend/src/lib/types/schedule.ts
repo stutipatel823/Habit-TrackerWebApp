@@ -15,3 +15,10 @@ export interface PositionedScheduleItem extends ScheduleItem {
   top: number;
   height: number;
 }
+
+export interface CreateScheduleItem {
+  user_id: string;
+  task_id: string;
+  start_time: string;
+  end_time: string;
+}

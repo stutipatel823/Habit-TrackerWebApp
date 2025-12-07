@@ -1,3 +1,5 @@
+# app/core/supabase_client.py (do not change)
+
 import os
 from dotenv import load_dotenv
 from supabase import create_client, Client

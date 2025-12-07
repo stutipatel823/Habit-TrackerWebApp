@@ -13,3 +13,11 @@ class Task(BaseModel):
     recurrence_rule: Optional[str] = None
     created_at: Optional[datetime] = None
     updated_at: Optional[datetime] = None
+    
+class TaskCreate(BaseModel):
+    user_id: str
+    title: str
+    icon: str
+    color: str
+    is_recurring: bool = False
+    recurrence_rule: Optional[str] = None

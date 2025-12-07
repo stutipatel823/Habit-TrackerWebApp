@@ -1,6 +1,6 @@
 # app/services/task_service.py
 from app.core.supabase_client import supabase
-from app.schemas.task_schema import Task
+from app.schemas.task_schema import Task, TaskCreate
 
 def fetch_all_tasks():
     try:
@@ -9,3 +9,15 @@ def fetch_all_tasks():
         return tasks
     except Exception as e:
         return {"error": str(e)}
+
+def create_task(item: TaskCreate):
+    response = (
+        supabase.table("task")
+        .insert(item.model_dump())
+        .execute()
+    )
+
+    if not response.data:
+        return {"error": "Insert failed"}
+
+    return Task(**response.data[0])
