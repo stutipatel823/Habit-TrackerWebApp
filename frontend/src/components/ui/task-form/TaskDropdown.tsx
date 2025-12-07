@@ -1,3 +1,5 @@
+// components/ui/task-form/TaskDropdown.tsx
+
 "use client";
 import React, { useState, useEffect } from "react";
 import { Task } from "@/lib/types/task";
@@ -11,7 +13,7 @@ interface TaskDropdownProps {
 
 export default function TaskDropdown({ selectedTask, setSelectedTask }:TaskDropdownProps) {
   const [allTasks, setAllTasks] = useState<Task[]>([]);
-  const [open, setOpen] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState(false);
 
   useEffect(() => {
     const fetchTasks = async () => {
@@ -25,7 +27,7 @@ export default function TaskDropdown({ selectedTask, setSelectedTask }:TaskDropd
     <div className="relative w-full">
       {/* Selected item */}
       <button
-        onClick={() => setOpen(!open)}
+        onClick={() => setOpenDropdown(!openDropdown)}
         className="w-full border border-black px-3 py-2 flex items-center justify-between"
       >
         {selectedTask ? (
@@ -38,13 +40,13 @@ export default function TaskDropdown({ selectedTask, setSelectedTask }:TaskDropd
             <span>{selectedTask.title}</span>
           </div>
         ) : (
-          <span className="text-gray-500">Select a task...</span>
+          <span className="h-fit text-gray-500">Select a task...</span>
         )}
         <span><ChevronDown size={20} /></span>
       </button>
 
       {/* Dropdown options */}
-      {open && (
+      {openDropdown && (
         <div
           className="absolute z-10 w-full bg-white shadow-lg rounded-md border border-black 
                     mt-2 p-2 space-y-2 max-h-60 overflow-y-auto animate-fadeIn"
@@ -54,7 +56,7 @@ export default function TaskDropdown({ selectedTask, setSelectedTask }:TaskDropd
               key={task.id}
               onClick={() => {
                 setSelectedTask(task);
-                setOpen(false);
+                setOpenDropdown(false);
               }}
               className="px-2 py-2 bg-gray-50 rounded-md cursor-pointer
                         hover:bg-gray-100 transition-all flex items-center space-x-3"
