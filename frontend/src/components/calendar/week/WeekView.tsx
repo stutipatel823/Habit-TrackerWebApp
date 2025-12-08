@@ -6,7 +6,7 @@ import WeekSlotGrid from "./WeekSlotGrid";
 import WeekTask from "./WeekTask";
 import { getExpectedScheduleItems } from "@/api/expected_api";
 
-import type { PositionedScheduleItem, ScheduleItem } from "@/lib/types/schedule";
+import type { PositionedScheduleItem, ScheduleWithTaskItem } from "@/lib/types/schedule";
 
 interface WeekViewProps {
   weekDates: Date[];
@@ -14,7 +14,7 @@ interface WeekViewProps {
 }
 
 export default function WeekView({ weekDates }: WeekViewProps) {
-  const [scheduleItems, setScheduleItems] = useState<ScheduleItem[]>([]);
+  const [scheduleItems, setScheduleItems] = useState<ScheduleWithTaskItem[]>([]);
   const slotHeight = 40;
 
   // Fetch schedule items for this week
@@ -56,7 +56,7 @@ export default function WeekView({ weekDates }: WeekViewProps) {
 
           return (
             <div
-              key={`${item.item_id}-${item.top}-${item.dayIndex}`}
+              key={`${item.schedule_id}`}
               className="absolute px-1 z-10 overflow-hidden"
               style={{
                 top: `${item.top}px`,

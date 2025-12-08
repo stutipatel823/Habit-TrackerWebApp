@@ -1,7 +1,7 @@
-import type { ScheduleItem } from "@/lib/types/schedule";
+import type { ScheduleWithTaskItem } from "@/lib/types/schedule";
 
 interface WeekTaskProps {
-  item: ScheduleItem;
+  item: ScheduleWithTaskItem;
 }
 
 export default function WeekTask({ item }: WeekTaskProps) {

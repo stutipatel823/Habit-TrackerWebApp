@@ -1,9 +1,9 @@
 // components/week/utils/positionItems.ts
 import { parseISO, isSameDay } from "date-fns";
-import type { ScheduleItem, PositionedScheduleItem } from "@/lib/types/schedule";
+import type { PositionedScheduleItem, ScheduleWithTaskItem } from "@/lib/types/schedule";
 
 export function positionItems(
-  items: ScheduleItem[],
+  items: ScheduleWithTaskItem[],
   weekDates: Date[],
   slotHeight: number
 ): PositionedScheduleItem[] {

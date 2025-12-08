@@ -9,6 +9,15 @@ export interface Task {
   created_at?: string;
   updated_at?: string;
 }
+
+export interface TaskCreate {
+  user_id: string;
+  title: string;
+  icon: string;
+  color: string;
+  is_recurring?: boolean; // optional, defaults to false in backend
+}
+
 export interface MockTask {
   id: string;
   user_id: string;

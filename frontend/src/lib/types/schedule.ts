@@ -1,6 +1,15 @@
 // src/lib/types/schedule.ts
 export type ScheduleItem = {
-  item_id: string;
+  schedule_id: string;
+  user_id: string;
+  task_id: string;
+  habit_id: string;
+  start_tim: string;
+  end_time: string;
+};
+
+export type ScheduleWithTaskItem = {
+  schedule_id: string;
   title: string;
   icon: string;
   color: string;
@@ -10,15 +19,15 @@ export type ScheduleItem = {
   duration: number; 
 };
 
-export interface PositionedScheduleItem extends ScheduleItem {
+export interface PositionedScheduleItem extends ScheduleWithTaskItem {
   dayIndex: number;
   top: number;
   height: number;
 }
 
 export interface CreateScheduleItem {
-  user_id: string;
   task_id: string;
+  user_id: string;
   start_time: string;
   end_time: string;
 }
