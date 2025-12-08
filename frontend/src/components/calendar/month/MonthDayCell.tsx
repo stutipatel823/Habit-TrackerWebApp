@@ -1,6 +1,6 @@
 // components/month/MonthDayTask.tsx
 
-import { isSameDay, isToday, format } from "date-fns";
+import { isToday, format } from "date-fns";
 import MonthTask from "./MonthTask";
 import type { ScheduleItem } from "@/lib/types/schedule";
 

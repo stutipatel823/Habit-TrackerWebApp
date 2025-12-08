@@ -4,7 +4,7 @@ export type ScheduleItem = {
   user_id: string;
   task_id: string;
   habit_id: string;
-  start_tim: string;
+  start_time: string;
   end_time: string;
 };
 
