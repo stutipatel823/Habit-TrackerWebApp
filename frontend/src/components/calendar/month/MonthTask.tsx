@@ -1,10 +1,10 @@
 // components/month/MonthTask.tsx
 import React from "react";
 import { format } from "date-fns";
-import { ScheduleItem } from "@/lib/types/schedule";
+import { ScheduleWithTaskItem } from "@/lib/types/schedule";
 
 type TaskItemProps = {
-  task: ScheduleItem;
+  task: ScheduleWithTaskItem;
 };
 
 function MonthTask({ task }: TaskItemProps) {
