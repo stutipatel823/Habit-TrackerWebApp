@@ -1,7 +1,7 @@
 import { startOfMonth, startOfWeek, endOfMonth, endOfWeek, addDays } from "date-fns";
 import MonthDayCell from "./MonthDayCell";
 import { useEffect, useState } from "react";
-import type { ScheduleItem } from "@/lib/types/schedule";
+import type { ScheduleWithTaskItem } from "@/lib/types/schedule";
 import { getExpectedScheduleItems } from "@/api/expected_api";
 
 interface MonthGridProps {
@@ -16,7 +16,7 @@ export default function MonthGrid({ currentDate }: MonthGridProps) {
   const calendarStart = startOfWeek(monthStart, { weekStartsOn: 0 });
   const calendarEnd = endOfWeek(monthEnd, { weekStartsOn: 0 });
 
-  const [allTasks, setAllTasks] = useState<ScheduleItem[]>([]);
+  const [allTasks, setAllTasks] = useState<ScheduleWithTaskItem[]>([]);
   const monthKey = `${currentDate.getFullYear()}-${currentDate.getMonth()}`;
   // Fetch all tasks for the calendar range at once
   useEffect(() => {
