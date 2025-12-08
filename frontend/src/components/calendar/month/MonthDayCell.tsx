@@ -2,11 +2,11 @@
 
 import { isToday, format } from "date-fns";
 import MonthTask from "./MonthTask";
-import type { ScheduleItem } from "@/lib/types/schedule";
+import type { ScheduleWithTaskItem } from "@/lib/types/schedule";
 
 interface MonthDayCellProps {
   day: Date;
-  tasks: ScheduleItem[]; // tasks for this day only
+  tasks: ScheduleWithTaskItem[]; // tasks for this day only
   isLastRow?: boolean;
   isLastCol?: boolean;
 }
