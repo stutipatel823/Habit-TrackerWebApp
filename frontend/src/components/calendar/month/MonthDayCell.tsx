@@ -37,7 +37,7 @@ export default function MonthDayCell({
       {/* Tasks */}
       <div className="flex flex-col gap-1 w-full">
         {tasks.slice(0, 3).map((task, index) => (
-          <MonthTask key={`${task.item_id}-${index}`} task={task} />
+          <MonthTask key={`${task.schedule_id}-${index}`} task={task} />
         ))}
 
         {tasks.length > 3 && (
