@@ -87,7 +87,9 @@ export default function WeekView({ weekDates }: WeekViewProps) {
               {/* Delete Button (only if selected) */}
               {selectedTaskId === item.schedule_id && (
                 
-                <div className="absolute -right-10 -top-2 z-50">
+                <div className={`absolute -right-5 -top-2 z-50 ${
+                  item.dayIndex === 6 ? "-left-8" : "-right-8"
+                }`}>
                   <DeleteItem
                     bgColor={item.color}
                     deleteFunction={async () => {
