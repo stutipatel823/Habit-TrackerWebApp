@@ -22,11 +22,17 @@ export default function WeekView({ weekDates }: WeekViewProps) {
 
   // Fetch schedule items for this week
   useEffect(() => {
-    (async () => {
-      const items = await getExpectedScheduleItems(weekDates[0], weekDates[6]);
-      setScheduleItems(items);
-    })();
-  }, [weekDates]);
+  (async () => {
+    if (!weekDates || weekDates.length < 7) return;
+
+    const start = new Date(weekDates[0].getTime()); // copy Sunday
+    const end = new Date(weekDates[6].getTime() + 24 * 60 * 60 * 1000 - 1); // Saturday 23:59:59.999
+
+    const items = await getExpectedScheduleItems(start, end);
+    setScheduleItems(items);
+  })();
+}, [weekDates]);
+
 
   // Only calculated ONCE
   const timeSlots = useMemo(() => generateTimeSlots(), []);
@@ -38,7 +44,7 @@ export default function WeekView({ weekDates }: WeekViewProps) {
   );
 
   const totalHeight = timeSlots.length * slotHeight;
-  const columns = 8;
+  const columns = 8
   const colWidth = 100 / columns;
 
   // Toggle on click
