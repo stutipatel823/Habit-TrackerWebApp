@@ -41,3 +41,12 @@ export async function createExpectedScheduleItem({
   if (!res.ok) throw new Error('Failed to create expected schedule item');
   return res.json();
 }
+
+export async function deleteExpectedScheduleItem(id: string) {
+  const res = await fetch(`${backendUrl}/expected?id=${id}`, {
+    method: 'DELETE',
+  });
+
+  if (!res.ok) throw new Error("Failed to delete expected schedule item");
+  return res.json();
+}

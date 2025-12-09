@@ -1,12 +1,14 @@
+// src/components/calendar/week/WeekView.tsx
+
 import { useEffect, useMemo, useState } from "react";
 import { generateTimeSlots } from "./utils/timeSlots";
 import { positionItems } from "./utils/positionItems";
 import WeekHeader from "./WeekHeader";
 import WeekSlotGrid from "./WeekSlotGrid";
 import WeekTask from "./WeekTask";
-import { getExpectedScheduleItems } from "@/api/expected_api";
-
+import { deleteExpectedScheduleItem, getExpectedScheduleItems } from "@/api/expected_api";
 import type { PositionedScheduleItem, ScheduleWithTaskItem } from "@/lib/types/schedule";
+import DeleteItem from "@/components/ui/DeleteItem";
 
 interface WeekViewProps {
   weekDates: Date[];
@@ -15,6 +17,7 @@ interface WeekViewProps {
 
 export default function WeekView({ weekDates }: WeekViewProps) {
   const [scheduleItems, setScheduleItems] = useState<ScheduleWithTaskItem[]>([]);
+  const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const slotHeight = 40;
 
   // Fetch schedule items for this week
@@ -38,26 +41,29 @@ export default function WeekView({ weekDates }: WeekViewProps) {
   const columns = 8;
   const colWidth = 100 / columns;
 
+  // Toggle on click
+  const handleTaskClick = (id: string) => {
+    setSelectedTaskId(prev => (prev === id ? null : id));
+  };
+
   return (
     <div className="border rounded-xl overflow-hidden">
-      {/* Week header */}
       <WeekHeader weekDates={weekDates} />
 
-      {/* The grid */}
+      {/* Grid */}
       <div className="relative" style={{ height: `${totalHeight}px` }}>
-        <WeekSlotGrid
-          timeSlots={timeSlots}
-          slotHeight={slotHeight}
-        />
+        <WeekSlotGrid timeSlots={timeSlots} slotHeight={slotHeight} />
 
-        {/* Tasks overlay */}
+        {/* Tasks */}
         {positionedItems.map((item: PositionedScheduleItem) => {
           const leftPercent = ((item.dayIndex + 1) / columns) * 100;
 
           return (
             <div
-              key={`${item.schedule_id}`}
-              className="absolute px-1 z-10 overflow-hidden"
+              key={item.schedule_id}
+              className={`absolute px-1 z-10 overflow-visible ${
+                selectedTaskId === item.schedule_id ? "z-[999]" : "z-10"
+              }`}
               style={{
                 top: `${item.top}px`,
                 left: `calc(${leftPercent}% + 2px)`,
@@ -65,7 +71,28 @@ export default function WeekView({ weekDates }: WeekViewProps) {
                 height: `${item.height}px`,
               }}
             >
-              <WeekTask item={item} />
+
+              {/* Task */}
+              <WeekTask
+                item={item}
+                onClick={() => {handleTaskClick(item.schedule_id); console.log(item.schedule_id)}}
+              />
+
+              {/* Delete Button (only if selected) */}
+              {selectedTaskId === item.schedule_id && (
+                
+                <div className="absolute -right-10 -top-2 z-50">
+                  <DeleteItem
+                    bgColor={item.color}
+                    deleteFunction={async () => {
+                      // Your delete logic (API + local state)
+                      await deleteExpectedScheduleItem(item.schedule_id);
+                      setScheduleItems(prev => prev.filter(i => i.schedule_id !== item.schedule_id));
+                      setSelectedTaskId(null);
+                    }}
+                  />
+                </div>
+              )}
             </div>
           );
         })}

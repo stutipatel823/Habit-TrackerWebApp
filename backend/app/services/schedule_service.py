@@ -46,3 +46,14 @@ def create_expected_schedule_task(item: ExpectedScheduleCreate):
         return {"error": "Insert failed"}
     
     return {"message": "Insert successful"}
+
+def remove_expected_schedule_task(id: str):
+    response = (
+        supabase.table("expectedschedule")
+        .delete().eq("id", id)
+        .execute()
+    )
+    if not response.data:
+        return {"error": "Insert failed"}
+    
+    return {"message": "Delete successful"}
