@@ -20,7 +20,7 @@ export default function MonthDayCell({
   return (
     <div
       className={`
-        min-h-[150px] p-1 flex flex-col items-center cursor-pointer bg-neutral-50
+        min-h-[150px] p-1 flex flex-col items-center bg-neutral-50
         ${!isLastRow ? "border-b" : ""}
         ${!isLastCol ? "border-r" : ""}
       `}

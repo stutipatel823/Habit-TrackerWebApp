@@ -92,8 +92,8 @@ export default function CalendarContainer() {
         return <MonthView monthStart={monthStart} />;
       case "week":
         return <WeekView weekDates={weekRange} currentDate={currentDate} />;
-      // case "day":
-      //   return <DayView currentDate={currentDate} />;
+      case "day":
+        return <DayView date={currentDate} />;
     }
   };
 

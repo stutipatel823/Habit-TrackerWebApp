@@ -11,8 +11,8 @@ import DeadlinePicker from "@/components/ui/task-form/DeadlinePicker";
 import TaskDescription from "@/components/ui/task-form/TaskDescription";
 import { Task } from "@/lib/types/task";
 import { createExpectedScheduleItem } from "@/api/expected_api";
-import { combineDateAndTime } from "@/lib/utils";
 import { createTask } from "@/api/task_api";
+import { combineDateAndTime } from "@/lib/utils/combineDateAndTime";
 
 interface TaskFormProps {
   onClose: () => void;

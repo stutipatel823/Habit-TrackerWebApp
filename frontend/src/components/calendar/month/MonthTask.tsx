@@ -10,7 +10,7 @@ type TaskItemProps = {
 function MonthTask({ task }: TaskItemProps) {
   return (
     <div
-      className="w-full py-1 flex items-center rounded border-b shadow-sm bg-white"
+      className="w-full py-1 flex items-center rounded border-b shadow-sm bg-white cursor-pointer"
       // style={{ backgroundColor: `${task.color}1A` }} // 1A = ~10% opacity in hex
     >
       {/* Color indicator */}

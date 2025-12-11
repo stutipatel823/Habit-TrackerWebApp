@@ -1,4 +1,5 @@
-// components/week/WeekTimeSlotRow.tsx
+// src/components/calendar/day/DayTimeSlotRow.tsx
+
 import { memo, useState } from "react";
 import { format } from "date-fns";
 import TaskForm from "@/components/forms/TaskForm";
@@ -8,7 +9,7 @@ interface Props {
   slotHeight: number;
 }
 
-function WeekTimeSlotRow({ slot, slotHeight }: Props) {
+function DayTimeSlotRow({ slot, slotHeight }: Props) {
   const [showForm, setShowForm] = useState(false);
   const isHourMark = slot.getMinutes() === 0;
 
@@ -20,31 +21,25 @@ function WeekTimeSlotRow({ slot, slotHeight }: Props) {
         }`}
         style={{ height: `${slotHeight}px` }}
       >
-        {/* Time label */}
-        <div className="p-1 flex justify-center items-center text-gray-500 border-r">
+        {/* 1/8 width — time column */}
+        <div className="col-span-1 p-1 flex justify-center items-center text-gray-500 border-r">
           {format(slot, "h:mm a").toLowerCase()}
         </div>
 
-        {/* Empty 7 day columns */}
-        {[...Array(7)].map((_, i) => (
-          <div
-            key={i}
-            className="border-r"
-            onClick={() => setShowForm(true)}
-          />
-        ))}
+        {/* 7/8 width — task area */}
+        <div
+          className="col-span-7 cursor-pointer"
+          onClick={() => setShowForm(true)}
+        />
       </div>
 
-      {/* MODAL */}
+      {/* Modal */}
       {showForm && (
         <>
-          {/* Blur + dark background */}
           <div
             className="fixed inset-0 bg-black/30 backdrop-blur-sm z-40"
             onClick={() => setShowForm(false)}
           />
-
-          {/* Centered popup */}
           <div className="fixed inset-0 flex items-center justify-center z-50">
             <TaskForm onClose={() => setShowForm(false)} />
           </div>
@@ -54,4 +49,4 @@ function WeekTimeSlotRow({ slot, slotHeight }: Props) {
   );
 }
 
-export default memo(WeekTimeSlotRow);
+export default memo(DayTimeSlotRow);
