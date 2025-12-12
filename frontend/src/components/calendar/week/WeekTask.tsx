@@ -28,13 +28,15 @@ export default function WeekTask({
   if (type === "dribble") {
     return (
       <div
-        className="rounded-md bg-white border cursor-pointer overflow-hidden h-full p-1"
+        className="rounded-md bg-white border cursor-pointer overflow-hidden h-full px-1"
         onClick={onClick}
       >
-        <div className="h-[5px] rounded-md" style={{ backgroundColor: item.color }} />
+        <div className="h-[5px] my-1 rounded-md" style={{ backgroundColor: item.color }} />
 
-        <div className="text-black font-bold flex items-center text-[14px]">
-          {item.icon} {item.title}
+        <div className="text-black font-bold flex items-center text-md">
+          <p>
+            {item.icon} {item.title}
+          </p>
         </div>
 
         <div className="flex items-center space-x-0.5 text-neutral-500 text-xs">

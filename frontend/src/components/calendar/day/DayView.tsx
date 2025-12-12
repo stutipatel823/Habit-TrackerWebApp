@@ -29,22 +29,13 @@ export default function DayView({ date }: DayViewProps) {
 
       const items = await getExpectedScheduleItems(start, end);
       setScheduleItems(items);
+      console.log(start);
+      console.log(end);
+
     }
     fetchDayItems();
   }, [date]);
 
-    // 🔍 DEBUG: Print timezone + how browser interprets task times
-  useEffect(() => {
-    console.log("📍 Browser Timezone:", Intl.DateTimeFormat().resolvedOptions().timeZone);
-    console.log("⏱ UTC Offset (minutes):", new Date().getTimezoneOffset());
-
-    if (scheduleItems.length > 0) {
-      const first = scheduleItems[0];
-      console.log("🕒 Raw start_time:", first.start_time);
-      console.log("🕒 Parsed local date:", new Date(first.start_time));
-    }
-  }, [scheduleItems]);
-  // 🔍 END DEBUG
 
   // Position items vertically
   const positionedItems = useMemo(
@@ -61,7 +52,7 @@ export default function DayView({ date }: DayViewProps) {
   const totalHeight = timeSlots.length * slotHeight;
 
   return (
-    <div className="border rounded-xl flex flex-col h-[80vh]">
+    <div className="border rounded-xl flex flex-col h-fit">
       {/* Sticky header */}
       <DayHeader date={date} />
 
