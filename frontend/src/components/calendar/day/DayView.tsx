@@ -3,11 +3,11 @@ import { generateTimeSlots } from "../week/utils/timeSlots";
 import DayTimeSlotRow from "./DayTimeSlotRow";
 import DayHeader from "./DayHeader";
 import type { ScheduleWithTaskItem, PositionedScheduleItem } from "@/lib/types/schedule";
-import WeekTask from "../week/WeekTask";
 import { getExpectedScheduleItems, deleteExpectedScheduleItem } from "@/api/expected_api";
 import DeleteItem from "@/components/ui/DeleteItem";
 import { positionItemsForDay } from "./utils/positionItemsForDay";  // <-- FIXED
-
+import DayTask from "./DayTask";
+import { SLOT_HEIGHT } from "@/lib/constants";
 interface DayViewProps {
   date: Date;
 }
@@ -15,8 +15,8 @@ interface DayViewProps {
 export default function DayView({ date }: DayViewProps) {
   const [scheduleItems, setScheduleItems] = useState<ScheduleWithTaskItem[]>([]);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
+  const slotHeight = SLOT_HEIGHT;
 
-  const slotHeight = 40;
 
   // Fetch items for one day
   useEffect(() => {
@@ -61,14 +61,16 @@ export default function DayView({ date }: DayViewProps) {
   const totalHeight = timeSlots.length * slotHeight;
 
   return (
-    <div className="border rounded-xl overflow-hidden">
+    <div className="border rounded-xl flex flex-col h-[80vh]">
+      {/* Sticky header */}
       <DayHeader date={date} />
 
-      <div className="relative" style={{ height: totalHeight }}>
+      {/* Scrollable content */}
+      <div className="flex-1 overflow-y-auto relative">
         {timeSlots.map((slot, idx) => (
           <DayTimeSlotRow key={idx} slot={slot} slotHeight={slotHeight} />
         ))}
-        {/* Tasks */}
+
         {positionedItems.map(item => (
           <div
             key={item.schedule_id}
@@ -82,11 +84,10 @@ export default function DayView({ date }: DayViewProps) {
               width: `87.5%`
             }}
           >
-            <WeekTask
+            <DayTask
               item={item}
               onClick={() => handleTaskClick(item.schedule_id)}
             />
-
             {selectedTaskId === item.schedule_id && (
               <div className="absolute -left-8 -top-2 z-50">
                 <DeleteItem

@@ -15,7 +15,7 @@ function WeekTimeSlotRow({ slot, slotHeight }: Props) {
   return (
     <>
       <div
-        className={`grid grid-cols-8 border-b text-center ${
+        className={`grid grid-cols-8 border-b text-center bg-neutral-50 ${
           isHourMark ? "border-dashed" : ""
         }`}
         style={{ height: `${slotHeight}px` }}

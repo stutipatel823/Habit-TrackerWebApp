@@ -9,6 +9,7 @@ import WeekTask from "./WeekTask";
 import { deleteExpectedScheduleItem, getExpectedScheduleItems } from "@/api/expected_api";
 import type { PositionedScheduleItem, ScheduleWithTaskItem } from "@/lib/types/schedule";
 import DeleteItem from "@/components/ui/DeleteItem";
+import { SLOT_HEIGHT } from "@/lib/constants";
 
 interface WeekViewProps {
   weekDates: Date[];
@@ -18,7 +19,7 @@ interface WeekViewProps {
 export default function WeekView({ weekDates }: WeekViewProps) {
   const [scheduleItems, setScheduleItems] = useState<ScheduleWithTaskItem[]>([]);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
-  const slotHeight = 40;
+  const slotHeight = SLOT_HEIGHT;
 
   // Fetch schedule items for this week
   useEffect(() => {
