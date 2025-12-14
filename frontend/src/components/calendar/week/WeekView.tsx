@@ -83,6 +83,7 @@ export default function WeekView({ weekDates }: WeekViewProps) {
               <WeekTask
                 item={item}
                 onClick={() => {handleTaskClick(item.schedule_id); console.log(item.schedule_id)}}
+                type="actual"
               />
 
               {/* Delete Button (only if selected) */}

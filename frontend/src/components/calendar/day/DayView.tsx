@@ -78,6 +78,7 @@ export default function DayView({ date }: DayViewProps) {
             <DayTask
               item={item}
               onClick={() => handleTaskClick(item.schedule_id)}
+              type="actual"
             />
             {selectedTaskId === item.schedule_id && (
               <div className="absolute -left-8 -top-2 z-50">

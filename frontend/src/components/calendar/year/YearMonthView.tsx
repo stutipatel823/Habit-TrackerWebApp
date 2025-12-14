@@ -66,7 +66,7 @@ export default function YearMonthView({ month, year, tasksByDate }: YearMonthVie
           return (
             <div
               key={weekIndex}
-              className={`grid grid-cols-7 ${isCurrentWeekRow ? 'bg-sky-100 rounded-md' : ''}`}
+              className={`grid grid-cols-7 ${isCurrentWeekRow ? 'bg-brand-lightblue rounded-md' : ''}`}
             >
               {week.map((day, dayIndex) => {
                 if (!day) return <div key={dayIndex} />;

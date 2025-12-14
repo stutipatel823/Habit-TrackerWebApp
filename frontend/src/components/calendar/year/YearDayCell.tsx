@@ -20,7 +20,7 @@ export default function YearDayCell({ day, dateStr, tasks, isCurrentWeek }: Year
   return (
     <div className={`
       p-1 rounded w-7 h-7 flex flex-col items-center justify-center cursor-pointer
-      hover:bg-gray-200
+      hover:bg-sky-100
       ${isToday ? 'bg-brand-blue text-white' : ''}
     `}>
       <span className="text-xs">{day}</span>

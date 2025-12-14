@@ -6,7 +6,7 @@ import { format } from "date-fns";
 interface WeekTaskProps {
   item: ScheduleWithTaskItem;
   onClick: () => void;
-  type?: "dribble" | "google" | "universal"; // default is universal
+  type:"actual" | "expected";
 }
 
 function withOpacity(hex: string, alphaHex: string) {
@@ -17,82 +17,44 @@ function withOpacity(hex: string, alphaHex: string) {
 export default function WeekTask({
   item,
   onClick,
-  type = "dribble",
+  type = "actual",
 }: WeekTaskProps) {
   const start = format(new Date(item.start_time), "hh:mma").toLowerCase();
   const end = format(new Date(item.end_time), "hh:mma").toLowerCase();
-
-  //
-  // DRIBBLE STYLE
-  //
-  if (type === "dribble") {
-    return (
+  return (
+    <div
+      className="rounded-md bg-white border cursor-pointer overflow-hidden h-full p-2 flex space-x-2"
+      onClick={onClick}
+      style={{
+        // borderColor: item.color,
+        backgroundColor: 
+          type === "actual" ? withOpacity(item.color, "10") : undefined,
+      }}
+    >
+      {/* COLOR BAR */}
       <div
-        className="rounded-md bg-white border cursor-pointer overflow-hidden h-full px-1"
-        onClick={onClick}
-      >
-        <div className="h-[5px] my-1 rounded-md" style={{ backgroundColor: item.color }} />
+        className="h-full w-1.5 rounded-md"
+        style={{ backgroundColor: item.color }}
+      />
 
+      {/* MAIN CONTENT (column layout) */}
+      <div className="w-full">
+        {/* Title */}
         <div className="text-black font-bold flex items-center text-md">
           <p>
             {item.icon} {item.title}
           </p>
         </div>
-
+        {/* Timings */}
         <div className="flex items-center space-x-0.5 text-neutral-500 text-xs">
           <p className="truncate">{start}</p>
           <span>-</span>
           <p className="truncate">{end}</p>
         </div>
-      </div>
-    );
-  }
-
-  //
-  // GOOGLE STYLE
-  //
-  if (type === "google") {
-    return (
-      <div
-        className="rounded-md cursor-pointer overflow-hidden h-full p-1"
-        style={{ backgroundColor: item.color }}
-        onClick={onClick}
-      >
-        <div className="text-white font-bold flex items-center text-[14px]">
-          {item.icon} {item.title}
+        {/* Description BELOW title + timings */}
+        <div className="overflow-hidden truncate text-xs">
+          Sample: link for Description
         </div>
-
-        <div className="text-white flex items-center space-x-0.5 text-xs">
-          <p className="truncate">{start}</p>
-          <span>-</span>
-          <p className="truncate">{end}</p>
-        </div>
-      </div>
-    );
-  }
-
-  //
-  // UNIVERSAL (DEFAULT)
-  //
-  return (
-    <div
-      className="rounded-md bg-white border cursor-pointer overflow-hidden h-full p-1"
-      style={{
-        borderColor: item.color,
-        backgroundColor: withOpacity(item.color, "30"),
-      }}
-      onClick={onClick}
-    >
-      {/* <div className="h-[5px] rounded-md" style={{ backgroundColor: item.color }} /> */}
-
-      <div className="text-black font-bold flex items-center text-[14px]">
-        {item.icon} {item.title}
-      </div>
-
-      <div className="flex items-center space-x-0.5 text-neutral-500 text-xs">
-        <p className="truncate">{start}</p>
-        <span>-</span>
-        <p className="truncate">{end}</p>
       </div>
     </div>
   );
