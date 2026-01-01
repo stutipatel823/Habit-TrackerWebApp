@@ -1,21 +1,21 @@
-# app/services/schedule_service.py
+# app/services/actual_service.py
 from app.core.supabase_client import supabase
 from datetime import datetime
-from app.schemas.schedule_schema import ExpectedSchedule, ExpectedScheduleCreate
+from app.schemas.actual_schema import ActualSchedule, ActualScheduleCreate
 
 
-def fetch_all_expected_schedule():
+def fetch_all_actual_schedule():
     try:
-        response = supabase.table("expectedschedule").select("*").execute()
-        esItems = [ExpectedSchedule(**item) for item in response.data]
+        response = supabase.table("actualschedule").select("*").execute()
+        esItems = [ActualSchedule(**item) for item in response.data]
         return esItems
     except Exception as e:
         return {"error": str(e)}
     
 
-def fetch_expected_schedule(start_ts: str, end_ts: str):
+def fetch_actual_schedule(start_ts: str, end_ts: str):
     response = supabase.rpc(
-        "get_expected_schedule",
+        "get_actual_schedule",
         {
             "start_ts": start_ts,
             "end_ts": end_ts
@@ -35,9 +35,9 @@ def fetch_expected_schedule(start_ts: str, end_ts: str):
         })
     return schedule_with_duration
 
-def create_expected_schedule_task(item: ExpectedScheduleCreate):
+def create_actual_schedule_task(item: ActualScheduleCreate):
     response = (
-        supabase.table("expectedschedule")
+        supabase.table("actualschedule")
         .insert(item.model_dump())
         .execute()
     )
@@ -47,9 +47,9 @@ def create_expected_schedule_task(item: ExpectedScheduleCreate):
     
     return {"message": "Insert successful"}
 
-def remove_expected_schedule_task(id: str):
+def remove_actual_schedule_task(id: str):
     response = (
-        supabase.table("expectedschedule")
+        supabase.table("actualschedule")
         .delete().eq("id", id)
         .execute()
     )

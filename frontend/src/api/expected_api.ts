@@ -5,7 +5,7 @@ import { CreateScheduleItem, ScheduleItem } from "@/lib/types/schedule"
 const backendUrl = process.env.NEXT_PUBLIC_BACKEND_URL
 
 export async function getExpectedScheduleItems(start_ts: Date, end_ts: Date) {
-    const res = await fetch(`${backendUrl}/expected/range`, {
+    const res = await fetch(`${backendUrl}/schedule/expected/range`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
@@ -25,7 +25,7 @@ export async function createExpectedScheduleItem({
   start_time,
   end_time
 }: CreateScheduleItem): Promise<ScheduleItem> {
-  const res = await fetch(`${backendUrl}/expected`, {
+  const res = await fetch(`${backendUrl}/schedule/expected`, {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -43,7 +43,7 @@ export async function createExpectedScheduleItem({
 }
 
 export async function deleteExpectedScheduleItem(id: string) {
-  const res = await fetch(`${backendUrl}/expected?id=${id}`, {
+  const res = await fetch(`${backendUrl}/schedule/expected?id=${id}`, {
     method: 'DELETE',
   });
 

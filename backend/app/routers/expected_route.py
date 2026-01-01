@@ -1,9 +1,9 @@
-# app/routers/schedule_route.py
+# app/routers/expected_route.py
 from fastapi import APIRouter
-from app.schemas.schedule_schema import ExpectedScheduleCreate, ExpectedRangeRequest
-from app.services.schedule_service import *
+from app.schemas.expected_schema import ExpectedScheduleCreate, ExpectedScheduleRangeRequest
+from app.services.expected_service import *
 
-router = APIRouter(prefix="/expected", tags=["Expected Schedule"])
+router = APIRouter(prefix="/schedule/expected", tags=["Schedule"])
 
 @router.get("/")
 async def get_all_expected_schedule_items():
@@ -18,6 +18,6 @@ async def post_expected_schedule_item(id:str):
     return remove_expected_schedule_task(id)
 
 @router.post("/range")
-async def get_expected_range(body: ExpectedRangeRequest):
+async def get_expected_range(body: ExpectedScheduleRangeRequest):
     return fetch_expected_schedule(body.start_ts, body.end_ts)
 

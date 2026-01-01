@@ -1,19 +1,25 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import { startOfMonth, addMonths, format, startOfWeek, addDays, subMonths } from "date-fns";
 import CalendarHeader from "./CalendarHeader";
 import YearView from "../year/YearView";
 import MonthView from "../month/MonthView";
 import WeekView from "../week/WeekView";
 import DayView from "../day/DayView";
+import { ScheduleMode } from "@/lib/types/scheduleMode";
+import ScheduleModeToggle from "./SchdeuleModeToggle";
 
 type CalendarView = "year" | "month" | "week" | "day";
 
 export default function CalendarContainer() {
+
   const [currentDate, setCurrentDate] = useState(new Date());
   const [view, setView] = useState<CalendarView>("month");
-
+  const [scheduleMode, setScheduleMode] = useState<ScheduleMode>("planned");
+  useEffect(() => {
+    console.log("scheduleMode:", scheduleMode);
+  }, [scheduleMode]);
   // Event listeners for previous button
   const goToPrev = () => {
     switch (view) {
@@ -91,7 +97,21 @@ export default function CalendarContainer() {
       case "month":
         return <MonthView monthStart={monthStart} />;
       case "week":
-        return <WeekView weekDates={weekRange} currentDate={currentDate} />;
+        return (
+          <div className="flex flex-col">
+            <div className="flex justify-end mr-3">
+              <ScheduleModeToggle
+               value={scheduleMode}
+               onChange={setScheduleMode}/>
+            </div>
+
+            <WeekView
+              weekDates={weekRange}
+              currentDate={currentDate}
+              scheduleMode={scheduleMode}
+            />
+          </div>
+        );
       case "day":
         return <DayView date={currentDate} />;
     }

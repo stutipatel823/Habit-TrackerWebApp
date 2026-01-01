@@ -10,13 +10,16 @@ import { deleteExpectedScheduleItem, getExpectedScheduleItems } from "@/api/expe
 import type { PositionedScheduleItem, ScheduleWithTaskItem } from "@/lib/types/schedule";
 import DeleteItem from "@/components/ui/DeleteItem";
 import { SLOT_HEIGHT } from "@/lib/constants";
+import { ScheduleMode } from "@/lib/types/scheduleMode";
+import { getActualScheduleItems } from "@/api/actual_api";
 
 interface WeekViewProps {
   weekDates: Date[];
   currentDate: Date;
+  scheduleMode: ScheduleMode;
 }
 
-export default function WeekView({ weekDates }: WeekViewProps) {
+export default function WeekView({ weekDates, scheduleMode }: WeekViewProps) {
   const [scheduleItems, setScheduleItems] = useState<ScheduleWithTaskItem[]>([]);
   const [selectedTaskId, setSelectedTaskId] = useState<string | null>(null);
   const slotHeight = SLOT_HEIGHT;
@@ -29,10 +32,15 @@ export default function WeekView({ weekDates }: WeekViewProps) {
     const start = new Date(weekDates[0].getTime()); // copy Sunday
     const end = new Date(weekDates[6].getTime() + 24 * 60 * 60 * 1000 - 1); // Saturday 23:59:59.999
 
-    const items = await getExpectedScheduleItems(start, end);
+    const items =
+      scheduleMode === "planned"
+        ? await getExpectedScheduleItems(start, end)
+        : await getActualScheduleItems(start, end);
+    
     setScheduleItems(items);
+    console.log(scheduleMode, items);
   })();
-}, [weekDates]);
+}, [weekDates, scheduleMode]);
 
 
   // Only calculated ONCE
@@ -83,7 +91,7 @@ export default function WeekView({ weekDates }: WeekViewProps) {
               <WeekTask
                 item={item}
                 onClick={() => {handleTaskClick(item.schedule_id); console.log(item.schedule_id)}}
-                type="actual"
+                type={scheduleMode}
               />
 
               {/* Delete Button (only if selected) */}

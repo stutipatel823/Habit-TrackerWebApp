@@ -1,12 +1,13 @@
 // src/components/calendar/week/WeekTask.tsx
 
 import type { ScheduleWithTaskItem } from "@/lib/types/schedule";
+import { ScheduleMode } from "@/lib/types/scheduleMode";
 import { format } from "date-fns";
 
 interface WeekTaskProps {
   item: ScheduleWithTaskItem;
   onClick: () => void;
-  type:"actual" | "expected";
+  type: ScheduleMode;
 }
 
 function withOpacity(hex: string, alphaHex: string) {
@@ -17,7 +18,7 @@ function withOpacity(hex: string, alphaHex: string) {
 export default function WeekTask({
   item,
   onClick,
-  type = "actual",
+  type
 }: WeekTaskProps) {
   const start = format(new Date(item.start_time), "hh:mma").toLowerCase();
   const end = format(new Date(item.end_time), "hh:mma").toLowerCase();
@@ -28,7 +29,7 @@ export default function WeekTask({
       style={{
         // borderColor: item.color,
         backgroundColor: 
-          type === "actual" ? withOpacity(item.color, "10") : undefined,
+          type === "planned" ? withOpacity(item.color, "10") : 'white',
       }}
     >
       {/* COLOR BAR */}

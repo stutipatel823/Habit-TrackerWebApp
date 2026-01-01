@@ -30,16 +30,15 @@ export default function CalendarHeader({
           Today
         </button>
       </div>
-
       {/* Center: Month + arrows */}
       <div className="flex justify-center items-center gap-3">
-        <button onClick={onPrev} className="text-brand-blue">
+        <button onClick={onPrev} className="text-brand-blue border rounded-md">
           <ChevronLeft className="w-5 h-5 sm:w-8 sm:h-8" />
         </button>
         <h2 className="text-xxs sm:text-xl text-gray-800 font-bold">
           {viewTitle}
         </h2>
-        <button onClick={onNext} className="text-brand-blue">
+        <button onClick={onNext} className="text-brand-blue border rounded-md">
           <ChevronRight className="w-5 h-5 sm:w-8 sm:h-8" />
         </button>
       </div>
